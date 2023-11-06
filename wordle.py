@@ -56,7 +56,7 @@ target_word = random.choice(word_list)
 guessed_words = []
 url = 'https://wordle-api.vercel.app/api/wordle'
 attempts = 0
-max_attempts = 20
+max_attempts = 6
 
 
 # Main game loop
@@ -86,6 +86,18 @@ while attempts < max_attempts:
 
 # After the loop
 if target_word == guessed_words[-1]:
-    print(f"Wordle solved in {attempts} attempts!")
+    print(f"Wordle solved in {attempts+1} attempts!")
 else:
     print(f"Failed to solve Wordle. The word was '{target_word}'.")
+
+
+
+#Attempt 3: Guess - 'naras'
+#[0, 1, 4] [3]
+#The word was 'naffs'.
+
+# if two 'e' letters give feedback yellow and target only has one 'e'
+# only give the first letter 'e' as yellow
+# green takes priority for any colored letter (example shown above)
+
+
