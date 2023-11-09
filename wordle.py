@@ -2,6 +2,31 @@ import requests
 import json
 import random
 import preprocess_data
+import tkinter as tk
+
+# Create a tkinter window
+root = tk.Tk()
+root.geometry("500x500")
+root.title("Wordle Game")
+
+label = tk.Label(root, text="Wordle AI", font=('Times New Roman', 24))
+label.pack(padx=20, pady=20)
+
+
+# Create a frame to hold the black boxes
+box_frame = tk.Frame(root)
+box_frame.pack()
+
+# Create 30 empty black boxes in a 5x6 pattern
+white_boxes = []
+for row in range(6):
+    row_boxes = []
+    for col in range(5):
+        white_box = tk.Label(box_frame, width=6, height=3, bg="white", borderwidth=1, relief="solid")
+        white_box.grid(row=row, column=col, padx=5, pady=5)
+        row_boxes.append(white_box)
+    white_boxes.append(row_boxes)
+
 
 def display_wordle_result(data, guess):
     print(f"Guess: {guess}")
@@ -69,6 +94,19 @@ while attempts < max_attempts:
     print(green_indexes, yellow_indexes)
     guessed_words.append(guess)
 
+    #GUI code
+    print(attempts)
+    i = 0
+    while(i<5):
+        white_boxes[attempts][i].config(text=guess[i])
+        if i in green_indexes:
+            white_boxes[attempts][i].config(bg="#4CAF50")
+        elif i in yellow_indexes:
+            white_boxes[attempts][i].config(bg="#FFC107")
+        else:
+            white_boxes[attempts][i].config(bg="#808080")
+        i+=1
+
     # Check if the guess is correct
     if len(green_indexes) == len(target_word):
         print(f"Correct! The word is '{guess}'.")
@@ -91,7 +129,7 @@ else:
     print(f"Failed to solve Wordle. The word was '{target_word}'.")
 
 
-
+root.mainloop()
 #Attempt 3: Guess - 'naras'
 #[0, 1, 4] [3]
 #The word was 'naffs'.
@@ -99,5 +137,3 @@ else:
 # if two 'e' letters give feedback yellow and target only has one 'e'
 # only give the first letter 'e' as yellow
 # green takes priority for any colored letter (example shown above)
-
-
