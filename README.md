@@ -8,7 +8,7 @@ Data fetching
 
 
 Data Preprocessing:
-- Grant: loading words and fitting them to a hashtable datastruct
+- Grant: loading words and fitting them to a hashtable data structure
 
 
 Wordle API:
@@ -17,7 +17,12 @@ Wordle API:
 
 Wordle Solver
 - Daksh: ...
+- Grant: ...
 
 
 Solver GUI
 - Nate: ...
+
+Project Checkin
+- Grant: slides show
+- Nate & Daksh: presentation
