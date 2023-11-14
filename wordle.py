@@ -9,7 +9,7 @@ root = tk.Tk()
 root.geometry("500x500")
 root.title("Wordle Game")
 
-label = tk.Label(root, text="Wordle AI", font=('Times New Roman', 24))
+label = tk.Label(root, text="Wordle A.I. Solver", font=('Times New Roman', 24))
 label.pack(padx=20, pady=20)
 
 
@@ -117,7 +117,7 @@ filtered_words = word_list
 target_word = random.choice(word_list)
 # target_word = "later"
 guessed_words = []
-url = 'https://wordle-api.vercel.app/api/wordle'
+#url = 'https://wordle-api.vercel.app/api/wordle'
 attempts = 0
 max_attempts = 6
 
