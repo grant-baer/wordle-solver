@@ -44,34 +44,70 @@ def analyze_feedback(target_word, guessed_word):
     yellow_indexes = []  # Correct character in incorrect position
     white_indexes = []  # Incorrect character
 
+    target_char_count = {}  # Dictionary to store the count of each character in target_word
+    for char in target_word:
+        target_char_count[char] = target_char_count.get(char, 0) + 1
+
+    #get greens first 
     for i in range(len(target_word)):
         if guessed_word[i] == target_word[i]:
             green_indexes.append(i)
-        elif guessed_word[i] in target_word:
-            yellow_indexes.append(i)
-        else:
-            white_indexes.append(i)
+            target_char_count[target_word[i]] -= 1
+
+    #yellows and greys after greens
+    for i in range(len(target_word)):
+        if i not in green_indexes:
+            if guessed_word[i] in target_word and target_char_count[guessed_word[i]] > 0:
+                yellow_indexes.append(i)
+                target_char_count[guessed_word[i]] -= 1
+            else:
+                white_indexes.append(i)
 
     return green_indexes, yellow_indexes, white_indexes
 
 def filter_words(words, guess, green_indexes, yellow_indexes, white_indexes):
+
     new_filtered_words = []
+
     for word in words:
+        #create simple lists of green and yellow letters
+        green_letters = []
+        for i in green_indexes:
+            green_letters.append(guess[i])
+        yellow_letters = []
+        for j in yellow_indexes:
+            yellow_letters.append(guess[j])
+
+        #defualt keep word in filtered_list unless breaks a rule
         valid = True
+        
+        #dont keep words dont keep greens
         for index in green_indexes:
             if word[index] != guess[index]:
                 valid = False
                 break
+        #dont keep yellows if dont move yellow spot or has yellow in it
         for index in yellow_indexes:
             if word[index] == guess[index] or guess[index] not in word:
                 valid = False
                 break
+        #can eliminate grey in indexes where there isnt a green or yellow of that same letter
         for index in white_indexes:
-            if guess[index] in word:
+            if guess[index] in green_letters and guess[index] not in yellow_letters:
+                for idx in white_indexes:
+                    if word[idx] == guess[index]:
+                        valid = False
+                        break
+            elif guess[index] in yellow_letters:
+                if word[index] == guess[index]:
+                    valid = False
+                    break
+            elif guess[index] in word:
                 valid = False
                 break
         if valid:
             new_filtered_words.append(word)
+
     return new_filtered_words
 
 word_list = preprocess_data.load_words_from_file()
@@ -79,6 +115,7 @@ filtered_words = word_list
 
 # Main game loop
 target_word = random.choice(word_list)
+# target_word = "later"
 guessed_words = []
 url = 'https://wordle-api.vercel.app/api/wordle'
 attempts = 0
@@ -86,8 +123,14 @@ max_attempts = 6
 
 
 # Main game loop
+start = False #can delete this later, using for testing purposes
 while attempts < max_attempts:
-    guess = random.choice(filtered_words)
+    if start: #can delete later
+        guess = "sally"
+        start = False
+    else:
+        guess = random.choice(filtered_words)
+
     print(f"Attempt {attempts + 1}: Guess - '{guess}'")
     
     # Here, I am assuming the get_feedback function is replaced with the analyze_feedback
@@ -96,7 +139,7 @@ while attempts < max_attempts:
     guessed_words.append(guess)
 
     #GUI code
-    print(attempts)
+    # print(attempts)
     i = 0
     while(i<5):
         white_boxes[attempts][i].config(text=guess[i])
@@ -139,4 +182,3 @@ else:
 # only give the first letter 'e' as yellow
 # green takes priority for any colored letter (example shown above)
 root.mainloop()
-
