@@ -160,73 +160,80 @@ def get_next_guess(filtered_words, guessed_words):
 
 
 
+def play_wordle():
+    # Load words 
+    word_list = preprocess_data.load_words_from_file()
+    filtered_words = word_list
+
+    # Main game loop
+    target_word = random.choice(word_list)
+    # target_word = "crone"
+    guessed_words = []
+    #url = 'https://wordle-api.vercel.app/api/wordle'
+    attempts = 0
+    max_attempts = 6
 
 
-# Load words 
-word_list = preprocess_data.load_words_from_file()
-filtered_words = word_list
+    # Main game loop
+    start1 = True #can delete this later, using for testing purposes
+    start2 = False
+    while attempts < max_attempts:
+        if start1: #can delete later
+            guess = "salet"
+            start1 = False
+        elif start2:
+            guess = "terse"
+            start2 = False
+        else:
+            guess = random.choice(filtered_words)
+            guess = get_next_guess(filtered_words, guessed_words)
 
-# Main game loop
-target_word = random.choice(word_list)
-# target_word = "crone"
-guessed_words = []
-#url = 'https://wordle-api.vercel.app/api/wordle'
-attempts = 0
-max_attempts = 6
+        print(f"Attempt {attempts + 1}: Guess - '{guess}'")
+        
+        # Here, I am assuming the get_feedback function is replaced with the analyze_feedback
+        green_indexes, yellow_indexes, white_indexes = analyze_feedback(target_word, guess)
+        # print(green_indexes, yellow_indexes)
+        guessed_words.append(guess)
+
+        # GUI code
+        update_gui(attempts, guess, green_indexes, yellow_indexes)
+
+        # Check if the guess is correct
+        if len(green_indexes) == len(target_word):
+            print(f"Correct! The word is '{guess}'.")
+            attempts += 1
+            break
+        
+        # Filter the list of words based on the feedback
+        filtered_words = filter_words(filtered_words, guess, green_indexes, yellow_indexes, white_indexes)
+        attempts += 1
+
+        # If there are no more words left, the game is over
+        if not filtered_words:
+            print("No more possible words left to guess.")
+            break
 
 
-# Main game loop
-start1 = False #can delete this later, using for testing purposes
-start2 = False
-while attempts < max_attempts:
-    if start1: #can delete later
-        guess = "glare"
-        start1 = False
-    elif start2:
-        guess = "terse"
-        start2 = False
+    # After the loop
+    if target_word == guessed_words[-1]:
+        print(f"Wordle solved in {attempts+1} attempts!")
     else:
-        guess = random.choice(filtered_words)
-        guess = get_next_guess(filtered_words, guessed_words)
+        print(f"Failed to solve Wordle. The word was '{target_word}'.")
 
-    print(f"Attempt {attempts + 1}: Guess - '{guess}'")
-    
-    # Here, I am assuming the get_feedback function is replaced with the analyze_feedback
-    green_indexes, yellow_indexes, white_indexes = analyze_feedback(target_word, guess)
-    # print(green_indexes, yellow_indexes)
-    guessed_words.append(guess)
+    return(attempts)
 
-    # GUI code
-    update_gui(attempts, guess, green_indexes, yellow_indexes)
+# CODE FOR ONE GAME + GUI
+# play_wordle()
+# root.mainloop()
 
-    # Check if the guess is correct
-    if len(green_indexes) == len(target_word):
-        print(f"Correct! The word is '{guess}'.")
-        break
-    
-    # Filter the list of words based on the feedback
-    filtered_words = filter_words(filtered_words, guess, green_indexes, yellow_indexes, white_indexes)
-    attempts += 1
+# CODE FOR 1000 GAMES, NO GUI
+attempts_dict = {key: 0 for key in range(1, 7)}
+total_attempts = 0
+run_games = 1000
+while run_games > 0:  
+    num_attempts = play_wordle()
+    attempts_dict[num_attempts] += 1
+    total_attempts += num_attempts
+    run_games -= 1
+print("Average guesses per game: ", total_attempts/1000)
 
-    # If there are no more words left, the game is over
-    if not filtered_words:
-        print("No more possible words left to guess.")
-        break
-
-
-# After the loop
-if target_word == guessed_words[-1]:
-    print(f"Wordle solved in {attempts+1} attempts!")
-else:
-    print(f"Failed to solve Wordle. The word was '{target_word}'.")
-
-
-
-#Attempt 3: Guess - 'naras'
-#[0, 1, 4] [3]
-#The word was 'naffs'.
-
-# if two 'e' letters give feedback yellow and target only has one 'e'
-# only give the first letter 'e' as yellow
-# green takes priority for any colored letter (example shown above)
-root.mainloop()
