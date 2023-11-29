@@ -1,5 +1,6 @@
 import requests
 import json
+import string
 import random
 import preprocess_data
 import tkinter as tk
@@ -97,6 +98,9 @@ def filter_words(words, guess, green_indexes, yellow_indexes, white_indexes):
                 for idx in white_indexes:
                     if word[idx] == guess[index]:
                         valid = False
+                for idx in yellow_indexes:
+                    if word[idx] == guess[index]:
+                        valid = False
                         break
             elif guess[index] in yellow_letters:
                 if word[index] == guess[index]:
@@ -110,38 +114,9 @@ def filter_words(words, guess, green_indexes, yellow_indexes, white_indexes):
 
     return new_filtered_words
 
-word_list = preprocess_data.load_words_from_file()
-filtered_words = word_list
-
-# Main game loop
-target_word = random.choice(word_list)
-# target_word = "later"
-guessed_words = []
-#url = 'https://wordle-api.vercel.app/api/wordle'
-attempts = 0
-max_attempts = 6
-
-
-# Main game loop
-start = False #can delete this later, using for testing purposes
-while attempts < max_attempts:
-    if start: #can delete later
-        guess = "sally"
-        start = False
-    else:
-        guess = random.choice(filtered_words)
-
-    print(f"Attempt {attempts + 1}: Guess - '{guess}'")
-    
-    # Here, I am assuming the get_feedback function is replaced with the analyze_feedback
-    green_indexes, yellow_indexes, white_indexes = analyze_feedback(target_word, guess)
-    print(green_indexes, yellow_indexes)
-    guessed_words.append(guess)
-
-    #GUI code
-    # print(attempts)
+def update_gui(attempts, guess, green_indexes, yellow_indexes):
     i = 0
-    while(i<5):
+    while i < 5:
         white_boxes[attempts][i].config(text=guess[i])
         if i in green_indexes:
             white_boxes[attempts][i].config(bg="#4CAF50")
@@ -149,7 +124,80 @@ while attempts < max_attempts:
             white_boxes[attempts][i].config(bg="#FFC107")
         else:
             white_boxes[attempts][i].config(bg="#808080")
-        i+=1
+        i += 1
+    root.update_idletasks()
+
+def get_next_guess(filtered_words, guessed_words):
+    # Calculate the frequency of each letter in the remaining words
+    letter_freq = {letter: 0 for letter in string.ascii_lowercase}
+    
+    for word in filtered_words:
+        for letter in set(word):
+            letter_freq[letter] += 1
+    
+
+    high_score_word = filtered_words[0]
+    high_score = 0
+    for word in filtered_words:
+        score = 0
+        word_dict = {}
+        for letter in word:
+            word_dict[letter] = word_dict.get(letter, 0) + 1
+        
+        for letter in word:
+            if word_dict[letter] == 1:
+                score += letter_freq[letter]
+            elif word_dict[letter] == 2:
+                score += letter_freq[letter] / 2
+            else:
+                score += letter_freq[letter] / 4
+            word_dict[letter] += 1
+        if score > high_score:
+            high_score = score
+            high_score_word = word
+    
+    return high_score_word
+
+
+
+
+
+# Load words 
+word_list = preprocess_data.load_words_from_file()
+filtered_words = word_list
+
+# Main game loop
+target_word = random.choice(word_list)
+# target_word = "crone"
+guessed_words = []
+#url = 'https://wordle-api.vercel.app/api/wordle'
+attempts = 0
+max_attempts = 6
+
+
+# Main game loop
+start1 = False #can delete this later, using for testing purposes
+start2 = False
+while attempts < max_attempts:
+    if start1: #can delete later
+        guess = "glare"
+        start1 = False
+    elif start2:
+        guess = "terse"
+        start2 = False
+    else:
+        guess = random.choice(filtered_words)
+        guess = get_next_guess(filtered_words, guessed_words)
+
+    print(f"Attempt {attempts + 1}: Guess - '{guess}'")
+    
+    # Here, I am assuming the get_feedback function is replaced with the analyze_feedback
+    green_indexes, yellow_indexes, white_indexes = analyze_feedback(target_word, guess)
+    # print(green_indexes, yellow_indexes)
+    guessed_words.append(guess)
+
+    # GUI code
+    update_gui(attempts, guess, green_indexes, yellow_indexes)
 
     # Check if the guess is correct
     if len(green_indexes) == len(target_word):
