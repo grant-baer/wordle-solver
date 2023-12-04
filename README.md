@@ -16,7 +16,7 @@ Wordle API:
 
 
 Wordle Solver
-- Nate, Grant, Daksh
+- Nate, Grant, Daksh: peer programmed to create a preliminary draft of wordle solving algo.
 
 
 Solver GUI
