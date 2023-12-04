@@ -5,6 +5,7 @@ import random
 import preprocess_data
 import tkinter as tk
 
+
 # Create a tkinter window
 root = tk.Tk()
 root.geometry("500x500")
@@ -176,14 +177,12 @@ def play_wordle():
 
     # Main game loop
     start1 = True #can delete this later, using for testing purposes
-    start2 = False
+    
     while attempts < max_attempts:
         if start1: #can delete later
             guess = "salet"
             start1 = False
-        elif start2:
-            guess = "terse"
-            start2 = False
+        
         else:
             guess = random.choice(filtered_words)
             guess = get_next_guess(filtered_words, guessed_words)
@@ -219,6 +218,7 @@ def play_wordle():
         print(f"Wordle solved in {attempts+1} attempts!")
     else:
         print(f"Failed to solve Wordle. The word was '{target_word}'.")
+        return -1
 
     return(attempts)
 
@@ -230,10 +230,18 @@ def play_wordle():
 attempts_dict = {key: 0 for key in range(1, 7)}
 total_attempts = 0
 run_games = 1000
+num_fails = 0
 while run_games > 0:  
     num_attempts = play_wordle()
+    if num_attempts == -1:
+        num_fails += 1
+        continue
     attempts_dict[num_attempts] += 1
     total_attempts += num_attempts
     run_games -= 1
+
+print(attempts_dict)
+
 print("Average guesses per game: ", total_attempts/1000)
+print("Number of fails: ", num_fails)
 
