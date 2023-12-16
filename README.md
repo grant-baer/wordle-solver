@@ -16,14 +16,14 @@ Wordle API:
 
 
 Wordle Solver
-- Nate, Grant, Daksh: peer programmed to create a preliminary draft of wordle solving algo.
+- Daksh, Nate, Grant: Creating working Wordle solving algorithm involving possible word list filtering
 
 
 Solver GUI
 - Nate: Used Tkinter to create 2d box array and populate with guesses
 
 
-Dupliacte letter yellow boxes debugging:
+Duplicate letter yellow boxes debugging:
 - Nate: Had to rewrite analyze_feedback and filter_word functions
 
 
