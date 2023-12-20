@@ -1,40 +1,17 @@
 # wordle-solver
 
-LOGGING WHO DID WHAT:
+**Wordle Solver**
 
-Data fetching
-- Grant: list of valid guesses
-- Grant: list of possible answers
+Overview
+This program is an intelligent engine designed to solve the popular word puzzle game, Wordle. The aim is to guess the correct five-letter word within the least number of attempts.
 
+How It Works
+Initial Guess: The engine starts with a wide library of five-letter words.
+Feedback Analysis: After each guess, the game's feedback is used to prune the word library, eliminating words that no longer fit the given clues.
+Next Guesses: Using a refined list, the engine makes subsequent guesses that are more informed and targeted.
+Solution Path: The decision tree within the program visualizes the process of narrowing down the word library until the correct word is found.
 
-Data Preprocessing:
-- Grant: loading words and fitting them to a hashtable data structure
-
-
-Wordle API:
-- Daksh: Wiring up Wordle API to make guesses and see results with today's wordle
-
-
-Wordle Solver
-- Daksh, Nate, Grant: Creating working Wordle solving algorithm involving possible word list filtering
-
-
-Solver GUI
-- Nate: Used Tkinter to create 2d box array and populate with guesses
-
-
-Duplicate letter yellow boxes debugging:
-- Nate: Had to rewrite analyze_feedback and filter_word functions
-
-
-Letter Frequency Analysis
-- Nate: get_next_guess function assigns score to words in filtered_words
-
-  
-Project Checkin
-- Grant: slides show
-- Nate & Daksh: presentation
-
-
-Final Presentation
-- Grant, Daksh, Nate
+Features
+Efficient Algorithm: Designed to reach the correct answer in the fewest guesses possible.
+Feedback Integration: Dynamically updates the possible answers based on the game's colored tile feedback.
+GUI of Decision Process: Provides a clear representation of the guessing process and the next choice of words.
